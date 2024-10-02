@@ -170,42 +170,7 @@ section {
     width: 300px;
     text-align: center;
     padding: 20px 20px;
-}
-
-.popUp2 {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: var(--purple);
-    color: white;
-    width: 300px;
-    text-align: center;
-    padding: 20px 20px;
-    border: 5px solid var(--white);
-    border-radius: 20px;
-    z-index: 1000;
-    text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    opacity: 0;
-    animation: fadeInOut 3s ease forwards;
-  }
-  
-  @keyframes fadeInOut {
-    0% {
-      opacity: 0;
-    }
-    10% {
-      opacity: 1;
-    }
-    90% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 0;
-    }
-  }
-  
+}  
 
 .popUp input {
     font-size: 20px;
@@ -213,4 +178,40 @@ section {
     border-radius: 15px;
     border: 0;
     padding: 0 15px;
+}
+
+.messagePopUp {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(10px);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.messagePopUp .popUp {
+    background-color: var(--purple);
+    border: 5px solid var(--white);
+    border-radius: 20px;
+    width: 300px;
+    text-align: center;
+    padding: 20px 20px;
+}
+
+.messagePopUp .popUp button {
+    background-color: var(--green);
+    height: 40px;
+    color: white;
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    width: 100%;
+    border-radius: 15px;
+    cursor: pointer;
 }

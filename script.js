@@ -120,7 +120,6 @@ function startOrStopGame() {
   }
 }
 
-
 async function startGame() {
   let response = await sendRequest("new_game", "POST", { username, points });
   if (response.error) {
@@ -173,7 +172,7 @@ async function makeStep(event) {
           clearArea();
           gameButton.setAttribute("data-game", "start");
           gameButton.innerHTML = "ИГРАТЬ";
-          alert("Ты выиграл!");
+          showMessagePopup("Ты выиграл!");
       } else if (response.status === "Failed") {
           updateArea(response.table);
           balance = response.balance;
@@ -181,7 +180,7 @@ async function makeStep(event) {
           clearArea();
           gameButton.setAttribute("data-game", "start");
           gameButton.innerHTML = "ИГРАТЬ";
-          alert("Ты проиграл");
+          showMessagePopup("Ты проиграл");
       } else if (response.status === "Ok") {
           updateArea(response.table);
       }
@@ -232,4 +231,23 @@ function clearArea() {
   for (let i = 0; i < 80; i++) {
       area.innerHTML += `<div class="cell"></div>`;
   }
+}
+
+// Функция для отображения pop-up окна с сообщением
+function showMessagePopup(message) {
+  let popUpSection = document.createElement("section");
+  popUpSection.classList.add("messagePopUp");
+  popUpSection.innerHTML = `
+    <div class="popUp">
+      <h2>${message}</h2>
+      <button class="closePopup">Закрыть</button>
+    </div>
+  `;
+  
+  document.body.appendChild(popUpSection);
+  
+  // Закрытие pop-up окна
+  popUpSection.querySelector(".closePopup").addEventListener("click", () => {
+    document.body.removeChild(popUpSection);
+  });
 }
