@@ -120,6 +120,7 @@ function startOrStopGame() {
   }
 }
 
+
 async function startGame() {
   let response = await sendRequest("new_game", "POST", { username, points });
   if (response.error) {
