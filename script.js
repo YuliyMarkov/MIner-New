@@ -172,7 +172,7 @@ async function makeStep(event) {
           clearArea();
           gameButton.setAttribute("data-game", "start");
           gameButton.innerHTML = "ИГРАТЬ";
-          showMessagePopup("Ты выиграл!");
+          showResultPopUp("Ты выиграл!"); // Показать сообщение о выигрыше
       } else if (response.status === "Failed") {
           updateArea(response.table);
           balance = response.balance;
@@ -180,12 +180,36 @@ async function makeStep(event) {
           clearArea();
           gameButton.setAttribute("data-game", "start");
           gameButton.innerHTML = "ИГРАТЬ";
-          showMessagePopup("Ты проиграл");
+
+          // Показать все бомбы
+          revealAllBombs(response.table);
+
+          // Задержка перед отображением сообщения о проигрыше
+          setTimeout(() => {
+              showResultPopUp("Ты проиграл"); // Показать сообщение о проигрыше
+          }, 5000);
       } else if (response.status === "Ok") {
           updateArea(response.table);
       }
   }
 }
+
+// Функция для показа всех бомб
+function revealAllBombs(table) {
+    let cells = document.querySelectorAll(".cell");
+    let j = 0;
+    for (let row = 0; row < table.length; row++) {
+        for (let column = 0; column < table[row].length; column++) {
+            let value = table[row][column];
+            if (value === "BOMB") {
+                cells[j].classList.add("bomb"); // Применяем класс bomb
+                cells[j].innerHTML = ""; // Очищаем содержимое
+            }
+            j++;
+        }
+    }
+}
+
 
 function updateArea(table) {
   let cells = document.querySelectorAll(".cell");
