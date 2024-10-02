@@ -196,20 +196,19 @@ async function makeStep(event) {
 
 // Функция для показа всех бомб
 function revealAllBombs(table) {
-    let cells = document.querySelectorAll(".cell");
-    let j = 0;
-    for (let row = 0; row < table.length; row++) {
-        for (let column = 0; column < table[row].length; column++) {
-            let value = table[row][column];
-            if (value === "BOMB") {
-                cells[j].classList.add("bomb"); // Применяем класс bomb
-                cells[j].innerHTML = ""; // Очищаем содержимое
-            }
-            j++;
-        }
-    }
+  let cells = document.querySelectorAll(".cell");
+  let j = 0;
+  for (let row = 0; row < table.length; row++) {
+      for (let column = 0; column < table[row].length; column++) {
+          let value = table[row][column];
+          if (value === "BOMB") {
+              cells[j].classList.add("bomb"); // Применяем класс bomb
+              cells[j].innerHTML = ""; // Очищаем содержимое
+          }
+          j++;
+      }
+  }
 }
-
 
 function updateArea(table) {
   let cells = document.querySelectorAll(".cell");
@@ -220,22 +219,19 @@ function updateArea(table) {
           if (value === 0) {
               cells[j].classList.remove("active");
               cells[j].classList.remove("flag");
-              cells[j].innerHTML = ""; // Очищаем содержимое
           } else if (value >= 1) {
               cells[j].classList.remove("active");
               cells[j].classList.remove("flag");
-              cells[j].innerHTML = value; // Отображаем количество бомб вокруг
+              cells[j].innerHTML = value;
           } else if (value === "BOMB") {
               cells[j].classList.remove("active");
               cells[j].classList.remove("flag");
-              cells[j].classList.add("bomb"); // Применяем класс bomb
-              cells[j].innerHTML = ""; // Если хотите, можно добавить иконку бомбы или оставить пустым
+              cells[j].classList.add("bomb");
           }
           j++;
       }
   }
 }
-
 
 async function stopGame() {
   let response = await sendRequest("stop_game", "POST", { username, game_id });
@@ -260,20 +256,13 @@ function clearArea() {
   }
 }
 
-// Функция для отображения pop-up окна с сообщением
-function showMessagePopup(message) {
-  let popUpSection = document.createElement("section");
-  popUpSection.classList.add("messagePopUp");
-  popUpSection.innerHTML = `
-    <div class="popUp">
+// Функция для показа результата (выигрыш/проигрыш)
+function showResultPopUp(message) {
+  const popUp = document.createElement('div');
+  popUp.className = 'popUp';
+  popUp.innerHTML = `
       <h2>${message}</h2>
-      <button class="closePopup">Закрыть</button>
-    </div>
+      <button onclick="this.parentElement.style.display='none';">Закрыть</button>
   `;
-  
-  document.body.appendChild(popUpSection);
-  
-  popUpSection.querySelector(".closePopup").addEventListener("click", () => {
-    document.body.removeChild(popUpSection);
-  });
+  document.body.appendChild(popUp);
 }
