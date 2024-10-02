@@ -196,19 +196,22 @@ function updateArea(table) {
           if (value === 0) {
               cells[j].classList.remove("active");
               cells[j].classList.remove("flag");
+              cells[j].innerHTML = ""; // Очищаем содержимое
           } else if (value >= 1) {
               cells[j].classList.remove("active");
               cells[j].classList.remove("flag");
-              cells[j].innerHTML = value;
+              cells[j].innerHTML = value; // Отображаем количество бомб вокруг
           } else if (value === "BOMB") {
               cells[j].classList.remove("active");
               cells[j].classList.remove("flag");
-              cells[j].classList.add("bomb");
+              cells[j].classList.add("bomb"); // Применяем класс bomb
+              cells[j].innerHTML = ""; // Если хотите, можно добавить иконку бомбы или оставить пустым
           }
           j++;
       }
   }
 }
+
 
 async function stopGame() {
   let response = await sendRequest("stop_game", "POST", { username, game_id });
@@ -246,7 +249,6 @@ function showMessagePopup(message) {
   
   document.body.appendChild(popUpSection);
   
-  // Закрытие pop-up окна
   popUpSection.querySelector(".closePopup").addEventListener("click", () => {
     document.body.removeChild(popUpSection);
   });
