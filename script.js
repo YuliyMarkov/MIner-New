@@ -29,6 +29,7 @@ let username;
 let balance;
 let points = 1000;
 let game_id;
+
 checkUser();
 
 let authorizationForm = document.getElementById("authorization");
@@ -165,45 +166,41 @@ async function makeStep(event) {
   if (response.error) {
       alert(response.message);
   } else {
-      if (response.status === "Won") {
-          updateArea(response.table);
+      if (response.status === "Won" || response.status === "Failed") {
+          revealAllCells(response.table);
           balance = response.balance;
           showUser();
-          clearArea();
-          gameButton.setAttribute("data-game", "start");
-          gameButton.innerHTML = "ИГРАТЬ";
-          showResultPopUp("Ты выиграл!"); // Показать сообщение о выигрыше
-      } else if (response.status === "Failed") {
-          updateArea(response.table);
-          balance = response.balance;
-          showUser();
-          clearArea();
           gameButton.setAttribute("data-game", "start");
           gameButton.innerHTML = "ИГРАТЬ";
 
-          // Показать все бомбы
-          revealAllBombs(response.table);
-
-          // Задержка перед отображением сообщения о проигрыше
+          // Добавляем задержку перед показом сообщения
           setTimeout(() => {
-              showResultPopUp("Ты проиграл"); // Показать сообщение о проигрыше
-          }, 5000);
+              showResultPopUp(response.status === "Won" ? "Ты выиграл!" : "Ты проиграл");
+          }, 2000); // 2000 миллисекунд = 2 секунды
+
       } else if (response.status === "Ok") {
           updateArea(response.table);
       }
   }
 }
 
-// Функция для показа всех бомб
-function revealAllBombs(table) {
+function revealAllCells(table) {
   let cells = document.querySelectorAll(".cell");
   let j = 0;
   for (let row = 0; row < table.length; row++) {
       for (let column = 0; column < table[row].length; column++) {
           let value = table[row][column];
-          if (value === "BOMB") {
-              cells[j].classList.add("bomb"); // Применяем класс bomb
-              cells[j].innerHTML = ""; // Очищаем содержимое
+          cells[j].classList.remove("active");
+          cells[j].classList.remove("flag");
+
+          // Проверяем значение и отображаем соответствующее содержимое
+          if (value === 0) {
+              cells[j].innerHTML = ''; // Пустая ячейка
+          } else if (value >= 1) {
+              cells[j].innerHTML = value; // Число
+          } else if (value === "BOMB") {
+              cells[j].classList.add("bomb"); // Бомба
+              cells[j].innerHTML = '💣'; // Эмодзи бомбы
           }
           j++;
       }
@@ -219,14 +216,15 @@ function updateArea(table) {
           if (value === 0) {
               cells[j].classList.remove("active");
               cells[j].classList.remove("flag");
+              cells[j].innerHTML = ''; // Пустая ячейка
           } else if (value >= 1) {
               cells[j].classList.remove("active");
               cells[j].classList.remove("flag");
-              cells[j].innerHTML = value;
+              cells[j].innerHTML = value; // Число
           } else if (value === "BOMB") {
               cells[j].classList.remove("active");
               cells[j].classList.remove("flag");
-              cells[j].classList.add("bomb");
+              cells[j].classList.add("bomb"); // Бомба
           }
           j++;
       }
@@ -248,39 +246,32 @@ async function stopGame() {
   }
 }
 
+function showResultPopUp(message) {
+  let popUpSection = document.createElement("section");
+  popUpSection.className = "resultPopUp";  // Добавляем класс для стилизации
+  popUpSection.style.display = "flex";
+  popUpSection.style.justifyContent = "center";
+  popUpSection.style.alignItems = "center";
+
+  let popUpContent = document.createElement("div");
+  popUpContent.className = "popUpContent"; // Добавляем класс для стилизации
+  popUpContent.innerHTML = `<h2>${message}</h2><button class="closeButton">Закрыть</button>`;
+
+  popUpSection.appendChild(popUpContent);
+  document.body.appendChild(popUpSection);
+
+  popUpContent.querySelector(".closeButton").addEventListener("click", () => {
+      clearArea(); // Очищаем игровое поле
+      document.body.removeChild(popUpSection);
+  });
+}
+
 function clearArea() {
   let area = document.querySelector(".area");
   area.innerHTML = "";
   for (let i = 0; i < 80; i++) {
-      area.innerHTML += `<div class="cell"></div>`;
+      let cell = document.createElement("div");
+      cell.className = "cell";
+      area.appendChild(cell);
   }
-}
-
-// Функция для показа результата (выигрыш/проигрыш)
-function showResultPopUp(message) {
-  const popUp = document.createElement('div');
-  popUp.className = 'popUp';
-  popUp.innerHTML = `
-      <h2>${message}</h2>
-      <button onclick="startNewGame()">ИГРАТЬ</button>
-  `;
-  document.body.appendChild(popUp);
-}
-
-// Функция для начала новой игры
-function startNewGame() {
-  clearBombs(); // Удалить все бомбы с игрового поля
-  const popUp = document.querySelector('.popUp');
-  if (popUp) {
-      popUp.remove(); // Закрыть попап
-  }
-}
-
-// Функция для очистки всех бомб с игрового поля
-function clearBombs() {
-  let cells = document.querySelectorAll(".cell");
-  cells.forEach(cell => {
-      cell.classList.remove("bomb");
-      cell.innerHTML = ""; // Очищаем содержимое ячейки
-  });
 }

@@ -215,3 +215,33 @@ section {
     border-radius: 30px;
     cursor: pointer;
 }
+
+.resultPopUp {
+    background-color: var(--purple);
+    border: 5px solid var(--white);
+    border-radius: 20px;
+    width: 300px;
+    height: 70px;
+    text-align: center;
+    padding: 20px 20px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 999;
+}
+
+
+.closeButton {
+    background-color: var(--green);
+    height: 50px;
+    color: white;
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    width: 100%;
+    border-radius: 30px;
+    cursor: pointer;
+}
