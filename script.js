@@ -179,7 +179,7 @@ async function makeStep(event) {
           showUser();
           clearArea();
           gameButton.setAttribute("data-game", "start");
-          gameButton.innerHTML = "Играть";
+          gameButton.innerHTML = "ИГРАТЬ";
           alert("Ты проиграл:(");
       } else if (response.status === "Ok") {
           updateArea(response.table);
