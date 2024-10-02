@@ -172,7 +172,7 @@ async function makeStep(event) {
           clearArea();
           gameButton.setAttribute("data-game", "start");
           gameButton.innerHTML = "ИГРАТЬ";
-          showResultPopUp("Ты выиграл!"); // Показать сообщение о выигрыше
+          showMessagePopup("Ты выиграл!");
       } else if (response.status === "Failed") {
           updateArea(response.table);
           balance = response.balance;
@@ -180,32 +180,9 @@ async function makeStep(event) {
           clearArea();
           gameButton.setAttribute("data-game", "start");
           gameButton.innerHTML = "ИГРАТЬ";
-
-          // Показать все бомбы
-          revealAllBombs(response.table);
-
-          // Задержка перед отображением сообщения о проигрыше
-          setTimeout(() => {
-              showResultPopUp("Ты проиграл"); // Показать сообщение о проигрыше
-          }, 5000);
+          showMessagePopup("Ты проиграл");
       } else if (response.status === "Ok") {
           updateArea(response.table);
-      }
-  }
-}
-
-// Функция для показа всех бомб
-function revealAllBombs(table) {
-  let cells = document.querySelectorAll(".cell");
-  let j = 0;
-  for (let row = 0; row < table.length; row++) {
-      for (let column = 0; column < table[row].length; column++) {
-          let value = table[row][column];
-          if (value === "BOMB") {
-              cells[j].classList.add("bomb"); // Применяем класс bomb
-              cells[j].innerHTML = ""; // Очищаем содержимое
-          }
-          j++;
       }
   }
 }
@@ -219,19 +196,22 @@ function updateArea(table) {
           if (value === 0) {
               cells[j].classList.remove("active");
               cells[j].classList.remove("flag");
+              cells[j].innerHTML = ""; // Очищаем содержимое
           } else if (value >= 1) {
               cells[j].classList.remove("active");
               cells[j].classList.remove("flag");
-              cells[j].innerHTML = value;
+              cells[j].innerHTML = value; // Отображаем количество бомб вокруг
           } else if (value === "BOMB") {
               cells[j].classList.remove("active");
               cells[j].classList.remove("flag");
-              cells[j].classList.add("bomb");
+              cells[j].classList.add("bomb"); // Применяем класс bomb
+              cells[j].innerHTML = ""; // Если хотите, можно добавить иконку бомбы или оставить пустым
           }
           j++;
       }
   }
 }
+
 
 async function stopGame() {
   let response = await sendRequest("stop_game", "POST", { username, game_id });
@@ -256,13 +236,20 @@ function clearArea() {
   }
 }
 
-// Функция для показа результата (выигрыш/проигрыш)
-function showResultPopUp(message) {
-  const popUp = document.createElement('div');
-  popUp.className = 'popUp';
-  popUp.innerHTML = `
+// Функция для отображения pop-up окна с сообщением
+function showMessagePopup(message) {
+  let popUpSection = document.createElement("section");
+  popUpSection.classList.add("messagePopUp");
+  popUpSection.innerHTML = `
+    <div class="popUp">
       <h2>${message}</h2>
-      <button onclick="this.parentElement.style.display='none';">Закрыть</button>
+      <button class="closePopup">Закрыть</button>
+    </div>
   `;
-  document.body.appendChild(popUp);
+  
+  document.body.appendChild(popUpSection);
+  
+  popUpSection.querySelector(".closePopup").addEventListener("click", () => {
+    document.body.removeChild(popUpSection);
+  });
 }
